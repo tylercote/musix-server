@@ -33,6 +33,7 @@ class Festival(models.Model):
     name = models.CharField(max_length=100)
     startDate = models.DateField()
     endDate = models.DateField()
+    artists = models.ManyToManyField(Artist)
 
     class Meta:
         db_table = "festivals"
@@ -43,7 +44,7 @@ class Concert(models.Model):
     artist = models.ForeignKey(Artist, on_delete=models.PROTECT)
     venue = models.ForeignKey(Venue, on_delete=models.PROTECT)
     festival = models.ForeignKey(Festival, blank=True, null=True, on_delete=models.SET_NULL)
-    date = models.DateField()
+    date = models.DateField(blank=True, null=True)
 
     class Meta:
         db_table = "concerts"
@@ -51,7 +52,7 @@ class Concert(models.Model):
 
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
-    concert = models.ForeignKey(Concert, on_delete=models.PROTECT)
+    concert = models.ForeignKey(Concert, on_delete=models.CASCADE)
     stars = models.DecimalField(decimal_places=2, max_digits=3, null=True, blank=True)
     comments = models.CharField(max_length=300, null=True, blank=True)
 

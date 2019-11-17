@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
-from rest_framework.renderers import JSONRenderer
+from django.db.models import F, OuterRef
+from django.http import JsonResponse
 from . import models
 from . import serializers
 from .serializers import NewConcertSerializer
@@ -10,7 +10,17 @@ from .models import Artist
 from .models import Venue
 from .models import Concert
 from .models import Review
-from django.db.models.base import ObjectDoesNotExist
+from django.db.models.base import ObjectDoesNotExist, MultipleObjectsReturned
+from django.db import connection
+
+
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
 
 
 class GenreViewset(viewsets.ModelViewSet):
@@ -32,10 +42,28 @@ class FestivalViewset(viewsets.ModelViewSet):
     queryset = models.Festival.objects.all()
     serializer_class = serializers.FestivalSerializer
 
+    @action(detail=True)
+    def get_artists(self, request, pk):
+        festival = self.get_object()
+        data = list(festival.artists.values())
+        return JsonResponse(data, safe=False)
 
 class ConcertViewset(viewsets.ModelViewSet):
     queryset = models.Concert.objects.all()
     serializer_class = serializers.ConcertSerializer
+
+    @action(detail=False)
+    def get_concerts(self, request):
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT c.id, c.artist_id, c.venue_id, c.festival_id, a.name as artistName, c.date, v.name as venueName, v.location as venueLocation, f.name as festivalName, r.id as review_id, r.stars, r.comments "
+                           "FROM concerts AS c "
+                           "JOIN artists AS a ON c.artist_id = a.id "
+                           "JOIN venues AS v ON c.venue_id = v.id  "
+                           "LEFT JOIN festivals AS f ON c.festival_id = f.id "
+                           "LEFT JOIN reviews as r ON c.id = r.concert_id;")
+            # rows = cursor.fetchall()
+            rowDict = dictfetchall(cursor)
+            return JsonResponse(rowDict, safe=False)
 
     @action(detail=False, methods=["post"])
     def add_concert(self, request):
@@ -43,7 +71,6 @@ class ConcertViewset(viewsets.ModelViewSet):
         serializer.is_valid()
         concert = Concert()
         concert.date = serializer.data["date"]
-        print(serializer.data)
         try:
             artist = Artist.objects.get(name=serializer.data["artist"])
             concert.artist_id = artist.pk
@@ -55,7 +82,7 @@ class ConcertViewset(viewsets.ModelViewSet):
             concert.artist_id = newArtist.pk
 
         try:
-            venue = Venue.objects.get(name=serializer.data["venueName"], location=serializer.data["venueLocation"])
+            venue = Venue.objects.filter(name=serializer.data["venueName"], location=serializer.data["venueLocation"])[:1].get()
             concert.venue_id = venue.pk
         except ObjectDoesNotExist:
             print("Venue not in DB, making new venue...")
