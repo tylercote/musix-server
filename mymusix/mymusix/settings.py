@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'MyMusix',
         'USER': 'root',
-        'PASSWORD': 'tc321$tc321$',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': ''
     }
