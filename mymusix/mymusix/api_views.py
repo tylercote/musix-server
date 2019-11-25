@@ -17,6 +17,7 @@ from .models import Concert
 from .models import Review
 from django.db.models.base import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import connection
+from .permissions import IsOwnerOrReadOnly
 
 
 @api_view(['GET'])
@@ -57,21 +58,25 @@ def dictfetchall(cursor):
 class GenreViewset(viewsets.ModelViewSet):
     queryset = models.Genre.objects.all()
     serializer_class = serializers.GenreSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ArtistViewset(viewsets.ModelViewSet):
     queryset = models.Artist.objects.all()
     serializer_class = serializers.ArtistSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class VenueViewset(viewsets.ModelViewSet):
     queryset = models.Venue.objects.all()
     serializer_class = serializers.VenueSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class FestivalViewset(viewsets.ModelViewSet):
     queryset = models.Festival.objects.all()
     serializer_class = serializers.FestivalSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=True)
     def get_artists(self, request, pk):
@@ -79,9 +84,15 @@ class FestivalViewset(viewsets.ModelViewSet):
         data = list(festival.artists.values())
         return JsonResponse(data, safe=False)
 
+
 class ConcertViewset(viewsets.ModelViewSet):
     queryset = models.Concert.objects.all()
     serializer_class = serializers.ConcertSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        queryset = models.Concert.objects.all().filter(user=self.request.user)
+        return queryset
 
     @action(detail=False)
     def get_concerts(self, request):
@@ -91,7 +102,8 @@ class ConcertViewset(viewsets.ModelViewSet):
                            "JOIN artists AS a ON c.artist_id = a.id "
                            "JOIN venues AS v ON c.venue_id = v.id  "
                            "LEFT JOIN festivals AS f ON c.festival_id = f.id "
-                           "LEFT JOIN reviews as r ON c.id = r.concert_id;")
+                           "LEFT JOIN reviews as r ON c.id = r.concert_id "
+                           "WHERE c.user_id = " + str(request.user.id) + ";")
             # rows = cursor.fetchall()
             rowDict = dictfetchall(cursor)
             return JsonResponse(rowDict, safe=False)
@@ -101,6 +113,7 @@ class ConcertViewset(viewsets.ModelViewSet):
         serializer = NewConcertSerializer(data=request.data)
         serializer.is_valid()
         concert = Concert()
+        concert.user = request.user
         concert.date = serializer.data["date"]
         try:
             artist = Artist.objects.get(name=serializer.data["artist"])
@@ -126,6 +139,7 @@ class ConcertViewset(viewsets.ModelViewSet):
         concert.save()
 
         newReview = Review()
+        newReview.user = request.user
         newReview.concert_id = concert.pk
         newReview.stars = serializer.data["rating"]
         newReview.comments = serializer.data["comments"]
@@ -137,3 +151,4 @@ class ConcertViewset(viewsets.ModelViewSet):
 class ReviewViewset(viewsets.ModelViewSet):
     queryset = models.Review.objects.all()
     serializer_class = serializers.ReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('id', 'username')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -64,10 +64,11 @@ class FestivalSerializer(serializers.ModelSerializer):
 class ConcertSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Concert
-        fields = ('id', 'artist', 'venue', 'festival', 'date')
+        fields = ('id', 'user', 'artist', 'venue', 'festival', 'date')
 
 
 class NewConcertSerializer(serializers.Serializer):
+    user = serializers.IntegerField()
     artist = serializers.CharField()
     rating = serializers.DecimalField(decimal_places=2, max_digits=3)
     comments = serializers.CharField()
@@ -79,4 +80,4 @@ class NewConcertSerializer(serializers.Serializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Review
-        fields = ('id', 'concert', 'stars', 'comments')
+        fields = ('id', 'user', 'concert', 'stars', 'comments')

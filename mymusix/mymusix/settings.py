@@ -66,6 +66,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+AUTHENTICATION_BACKENDS = ['mymusix.backends.EmailOrUsernameModelBackend']
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = (

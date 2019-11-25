@@ -15,7 +15,7 @@ __location__ = os.path.realpath(
 
 
 def run():
-    with open(os.path.join(__location__, 'osheaga2018'), 'r') as f:
+    with open(os.path.join(__location__, 'firefly2019'), 'r') as f:
 
         i = 0
         newFestival = Festival()
