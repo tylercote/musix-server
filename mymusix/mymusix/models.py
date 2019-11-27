@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.conf import settings
 
 class Genre(models.Model):
     id = models.AutoField(primary_key=True)
@@ -41,6 +41,8 @@ class Festival(models.Model):
 
 class Concert(models.Model):
     id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 null=True, blank=True, on_delete=models.SET_NULL)
     artist = models.ForeignKey(Artist, on_delete=models.PROTECT)
     venue = models.ForeignKey(Venue, on_delete=models.PROTECT)
     festival = models.ForeignKey(Festival, blank=True, null=True, on_delete=models.SET_NULL)
@@ -52,6 +54,8 @@ class Concert(models.Model):
 
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             null=True, blank=True, on_delete=models.SET_NULL)
     concert = models.ForeignKey(Concert, on_delete=models.CASCADE)
     stars = models.DecimalField(decimal_places=2, max_digits=3, null=True, blank=True)
     comments = models.CharField(max_length=300, null=True, blank=True)
