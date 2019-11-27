@@ -1,5 +1,0 @@
-- Tried to use Rails 6 API
-- Ran into issues involving the mysql2 gem not being able to be installed, as well as issues connecting Rails 6 to MySQL
-- At this point I found that MariaDB is a popular open source clone of MySQL that acts as a drop-in replacement
-- I was successfully able to connect my Rails project to MariaDB, but due to the complexities I had encountered (and random shell commands I needed to run) in order to configure the project properly, as well as the fact that MariaDB was being used rather than MySQL, I decided to switch over to the Django framework for Python
-- Reason for switch:
