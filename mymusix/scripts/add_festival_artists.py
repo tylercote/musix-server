@@ -15,41 +15,45 @@ __location__ = os.path.realpath(
 
 
 def run():
-    with open(os.path.join(__location__, 'firefly2019'), 'r') as f:
 
-        i = 0
-        newFestival = Festival()
+    festivals = ['osheaga2018', 'osheaga2019', 'firefly2019']
 
-        for line in f:
-            line = line.strip()
-            # Parse header line
-            if i == 0:
-                venueName, venueLocation, festivalName, festivalStartDate, festivalEndDate = line.split('|')
-                newFestival.name = festivalName
-                newFestival.startDate = festivalStartDate
-                newFestival.endDate = festivalEndDate
-                try:
-                    venue = Venue.objects.get(name=venueName, location=venueLocation)
-                    newFestival.venue_id = venue.pk
-                except ObjectDoesNotExist:
-                    print("Venue not in DB, making new venue...")
-                    newVenue = Venue()
-                    newVenue.name = venueName
-                    newVenue.location = venueLocation
-                    newVenue.save()
-                    newFestival.venue_id = newVenue.pk
-                newFestival.save()
+    for festival in festivals:
+        with open(os.path.join(__location__, festival), 'r') as f:
 
-            # Parse artist lines
-            else:
-                # Make artist if not exist
-                try:
-                    artist = Artist.objects.get(name=line)
-                    newFestival.artists.add(artist)
-                except ObjectDoesNotExist:
-                    print("Artist not in DB, making new artist...")
-                    newArtist = Artist()
-                    newArtist.name = line
-                    newArtist.save()
-                    newFestival.artists.add(newArtist)
-            i += 1
+            i = 0
+            newFestival = Festival()
+
+            for line in f:
+                line = line.strip()
+                # Parse header line
+                if i == 0:
+                    venueName, venueLocation, festivalName, festivalStartDate, festivalEndDate = line.split('|')
+                    newFestival.name = festivalName
+                    newFestival.startDate = festivalStartDate
+                    newFestival.endDate = festivalEndDate
+                    try:
+                        venue = Venue.objects.get(name=venueName, location=venueLocation)
+                        newFestival.venue_id = venue.pk
+                    except ObjectDoesNotExist:
+                        print("Venue not in DB, making new venue...")
+                        newVenue = Venue()
+                        newVenue.name = venueName
+                        newVenue.location = venueLocation
+                        newVenue.save()
+                        newFestival.venue_id = newVenue.pk
+                    newFestival.save()
+
+                # Parse artist lines
+                else:
+                    # Make artist if not exist
+                    try:
+                        artist = Artist.objects.get(name=line)
+                        newFestival.artists.add(artist)
+                    except ObjectDoesNotExist:
+                        print("Artist not in DB, making new artist...")
+                        newArtist = Artist()
+                        newArtist.name = line
+                        newArtist.save()
+                        newFestival.artists.add(newArtist)
+                i += 1
