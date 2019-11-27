@@ -58,25 +58,25 @@ def dictfetchall(cursor):
 class GenreViewset(viewsets.ModelViewSet):
     queryset = models.Genre.objects.all()
     serializer_class = serializers.GenreSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ArtistViewset(viewsets.ModelViewSet):
     queryset = models.Artist.objects.all()
     serializer_class = serializers.ArtistSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class VenueViewset(viewsets.ModelViewSet):
     queryset = models.Venue.objects.all()
     serializer_class = serializers.VenueSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class FestivalViewset(viewsets.ModelViewSet):
     queryset = models.Festival.objects.all()
     serializer_class = serializers.FestivalSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=True)
     def get_artists(self, request, pk):
@@ -88,7 +88,7 @@ class FestivalViewset(viewsets.ModelViewSet):
 class ConcertViewset(viewsets.ModelViewSet):
     queryset = models.Concert.objects.all()
     serializer_class = serializers.ConcertSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         queryset = models.Concert.objects.all().filter(user=self.request.user)
@@ -151,4 +151,4 @@ class ConcertViewset(viewsets.ModelViewSet):
 class ReviewViewset(viewsets.ModelViewSet):
     queryset = models.Review.objects.all()
     serializer_class = serializers.ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
