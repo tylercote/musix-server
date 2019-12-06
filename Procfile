@@ -1,1 +1,1 @@
-web: gunicorn mymusix.wsgi --log-file -
+web: gunicorn mymusix:app --log-file -

@@ -30,3 +30,7 @@
 `./manage.py runscript add_festival_artists` (this populates a few festivals, along with the associative table festivals_artists using data found online)
 
 `./manage.py runserver`
+
+Heroku Run Local
+python manage.py collectstatic
+heroku local web
