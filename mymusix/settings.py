@@ -107,10 +107,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'MyMusix',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': ''
+        'USER': 'b5cc6e5cfac38f',
+        'PASSWORD': '4480e459',
+        'HOST': 'us-cdbr-iron-east-05.cleardb.net',
+        'PORT': '3306'
     }
 }
 
