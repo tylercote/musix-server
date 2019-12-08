@@ -19,7 +19,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-1izvs+(!mx%vx8qh^_(d(d1la38x_hmg7(q5mq#fk%48)tpir'
+SECRET_KEY = os.environ['SECRET_KEY']
+# '-1izvs+(!mx%vx8qh^_(d(d1la38x_hmg7(q5mq#fk%48)tpir'
 # os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -108,7 +109,7 @@ DATABASES = {
         'NAME': 'MyMusix',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': os.environ['DATABASE_URL'],
+        'HOST': '127.0.0.1',
         'PORT': ''
     }
 }
