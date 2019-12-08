@@ -34,3 +34,4 @@
 Heroku Run Local
 python manage.py collectstatic
 heroku local web
+-> localhost:5000

@@ -25,7 +25,7 @@ SECRET_KEY = '-1izvs+(!mx%vx8qh^_(d(d1la38x_hmg7(q5mq#fk%48)tpir'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost' 'mymusix-server.herokuapp.com']
 
 
 # Application definition
