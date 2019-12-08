@@ -108,7 +108,7 @@ DATABASES = {
         'NAME': 'MyMusix',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': os.environ['DATABASE_URL'],
         'PORT': ''
     }
 }
