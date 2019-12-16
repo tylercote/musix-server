@@ -68,7 +68,6 @@ class ConcertSerializer(serializers.ModelSerializer):
 
 
 class NewConcertSerializer(serializers.Serializer):
-    user = serializers.IntegerField()
     artist = serializers.CharField()
     rating = serializers.DecimalField(decimal_places=2, max_digits=3)
     comments = serializers.CharField()
