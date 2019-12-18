@@ -58,7 +58,7 @@ class VenueSerializer(serializers.ModelSerializer):
 class FestivalSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Festival
-        fields = ('id', 'venue', 'name', 'startDate', 'endDate')
+        fields = ('id', 'venue', 'name', 'startdate', 'enddate')
 
 
 class ConcertSerializer(serializers.ModelSerializer):

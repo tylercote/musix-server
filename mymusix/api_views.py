@@ -97,7 +97,9 @@ class ConcertViewset(viewsets.ModelViewSet):
     @action(detail=False)
     def get_concerts(self, request):
         with connection.cursor() as cursor:
-            cursor.execute("SELECT c.id, c.artist_id, c.venue_id, c.festival_id, a.name as artistName, c.date, v.name as venueName, v.location as venueLocation, CONCAT(f.name, ' ', LEFT(c.date, 4)) as festivalName, r.id as review_id, r.stars, r.comments "
+            cursor.execute("SELECT c.id, c.artist_id, c.venue_id, c.festival_id, a.name as artistname, c.date, v.name as venuename, v.location as venuelocation, "
+                           "CASE WHEN c.festival_id IS NOT NULL THEN CONCAT(f.name, ' ', LEFT(c.date::VARCHAR, 4)) ELSE NULL END AS festivalname, "
+                           "r.id as review_id, r.stars, r.comments "
                            "FROM concerts AS c "
                            "JOIN artists AS a ON c.artist_id = a.id "
                            "JOIN venues AS v ON c.venue_id = v.id  "
@@ -115,7 +117,7 @@ class ConcertViewset(viewsets.ModelViewSet):
         concert.user = request.user
         concert.date = serializer.data["date"]
         try:
-            artist = Artist.objects.get(name=serializer.data["artist"])
+            artist = Artist.objects.filter(name=serializer.data["artist"])[:1].get()
             concert.artist_id = artist.pk
         except ObjectDoesNotExist:
             print("Artist not in DB, making new artist...")

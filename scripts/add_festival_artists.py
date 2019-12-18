@@ -28,18 +28,18 @@ def run():
                 line = line.strip()
                 # Parse header line
                 if i == 0:
-                    venueName, venueLocation, festivalName, festivalStartDate, festivalEndDate = line.split('|')
-                    newFestival.name = festivalName
-                    newFestival.startDate = festivalStartDate
-                    newFestival.endDate = festivalEndDate
+                    venuename, venuelocation, festivalname, festivalstartdate, festivalenddate = line.split('|')
+                    newFestival.name = festivalname
+                    newFestival.startdate = festivalstartdate
+                    newFestival.enddate = festivalenddate
                     try:
-                        venue = Venue.objects.get(name=venueName, location=venueLocation)
+                        venue = Venue.objects.get(name=venuename, location=venuelocation)
                         newFestival.venue_id = venue.pk
                     except ObjectDoesNotExist:
                         print("Venue not in DB, making new venue...")
                         newVenue = Venue()
-                        newVenue.name = venueName
-                        newVenue.location = venueLocation
+                        newVenue.name = venuename
+                        newVenue.location = venuelocation
                         newVenue.save()
                         newFestival.venue_id = newVenue.pk
                     newFestival.save()

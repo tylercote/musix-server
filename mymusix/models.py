@@ -31,8 +31,8 @@ class Festival(models.Model):
     id = models.AutoField(primary_key=True)
     venue = models.ForeignKey(Venue, on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
-    startDate = models.DateField()
-    endDate = models.DateField()
+    startdate = models.DateField()
+    enddate = models.DateField()
     artists = models.ManyToManyField(Artist)
 
     class Meta:
