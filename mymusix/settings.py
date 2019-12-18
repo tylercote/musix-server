@@ -157,4 +157,3 @@ STATIC_URL = "/static/"
 SECURE_SSL_REDIRECT = False
 
 django_heroku.settings(locals())
-del DATABASES['default']['OPTIONS']['sslmode']
