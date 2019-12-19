@@ -47,6 +47,7 @@ class Concert(models.Model):
     venue = models.ForeignKey(Venue, on_delete=models.PROTECT)
     festival = models.ForeignKey(Festival, blank=True, null=True, on_delete=models.SET_NULL)
     date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "concerts"
@@ -59,6 +60,7 @@ class Review(models.Model):
     concert = models.ForeignKey(Concert, on_delete=models.CASCADE)
     stars = models.DecimalField(decimal_places=2, max_digits=3, null=True, blank=True)
     comments = models.CharField(max_length=300, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "reviews"
