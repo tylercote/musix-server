@@ -3,6 +3,7 @@ from mymusix.models import Festival
 from mymusix.models import Venue
 from django.db.models.base import ObjectDoesNotExist
 import os
+import sys
 
 
 # Script to add a new festival with its details and listed artists (from text file)
@@ -16,44 +17,42 @@ __location__ = os.path.realpath(
 
 def run():
 
-    festivals = ['osheaga2018', 'osheaga2019', 'firefly2019']
+    festival = sys.argv[1]
 
-    for festival in festivals:
-        with open(os.path.join(__location__, festival), 'r') as f:
+    with open(os.path.join(__location__, festival), 'r') as f:
+        i = 0
+        newFestival = Festival()
 
-            i = 0
-            newFestival = Festival()
+        for line in f:
+            line = line.strip()
+            # Parse header line
+            if i == 0:
+                venuename, venuelocation, festivalname, festivalstartdate, festivalenddate = line.split('|')
+                newFestival.name = festivalname
+                newFestival.startdate = festivalstartdate
+                newFestival.enddate = festivalenddate
+                try:
+                    venue = Venue.objects.get(name=venuename, location=venuelocation)
+                    newFestival.venue_id = venue.pk
+                except ObjectDoesNotExist:
+                    print("Venue not in DB, making new venue...")
+                    newVenue = Venue()
+                    newVenue.name = venuename
+                    newVenue.location = venuelocation
+                    newVenue.save()
+                    newFestival.venue_id = newVenue.pk
+                newFestival.save()
 
-            for line in f:
-                line = line.strip()
-                # Parse header line
-                if i == 0:
-                    venuename, venuelocation, festivalname, festivalstartdate, festivalenddate = line.split('|')
-                    newFestival.name = festivalname
-                    newFestival.startdate = festivalstartdate
-                    newFestival.enddate = festivalenddate
-                    try:
-                        venue = Venue.objects.get(name=venuename, location=venuelocation)
-                        newFestival.venue_id = venue.pk
-                    except ObjectDoesNotExist:
-                        print("Venue not in DB, making new venue...")
-                        newVenue = Venue()
-                        newVenue.name = venuename
-                        newVenue.location = venuelocation
-                        newVenue.save()
-                        newFestival.venue_id = newVenue.pk
-                    newFestival.save()
-
-                # Parse artist lines
-                else:
-                    # Make artist if not exist
-                    try:
-                        artist = Artist.objects.get(name=line)
-                        newFestival.artists.add(artist)
-                    except ObjectDoesNotExist:
-                        print("Artist not in DB, making new artist...")
-                        newArtist = Artist()
-                        newArtist.name = line
-                        newArtist.save()
-                        newFestival.artists.add(newArtist)
-                i += 1
+            # Parse artist lines
+            else:
+                # Make artist if not exist
+                try:
+                    artist = Artist.objects.get(name=line)
+                    newFestival.artists.add(artist)
+                except ObjectDoesNotExist:
+                    print("Artist not in DB, making new artist...")
+                    newArtist = Artist()
+                    newArtist.name = line
+                    newArtist.save()
+                    newFestival.artists.add(newArtist)
+            i += 1
