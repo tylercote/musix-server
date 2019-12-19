@@ -17,9 +17,7 @@ __location__ = os.path.realpath(
 
 def run():
 
-    print(sys.argv)
-
-    festival = sys.argv[1]
+    festival = sys.argv[3]
 
     with open(os.path.join(__location__, festival), 'r') as f:
         i = 0
